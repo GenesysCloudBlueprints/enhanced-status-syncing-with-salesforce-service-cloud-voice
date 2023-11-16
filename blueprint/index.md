@@ -3,25 +3,25 @@ title: Update the presence of a Genesys Cloud user based on a Salesforce presenc
 author: kristen.oliphant
 indextype: blueprint
 icon: blueprint
-image: images/enhanced_status_syncing.png
+image: images/enhanced_status_sync.png
 category: 3
 summary: |
-  This Genesys Cloud Developer Blueprint demonstrates how to configure CX Cloud from Genesys and Salesforce Service Cloud Voice to use enhanced status syncing. Out of the box, the package provides high level status management. This blueprint will show a way to provide more detailed status mapping between Genesys Cloud and Salesforce Omni-Channel.
+  This Genesys Cloud Developer Blueprint demonstrates how to configure CX Cloud, Voice for Salesforce Service Cloud to use enhanced status sync. Out of the box, the package provides high level status management. This blueprint will show a way to provide more detailed status mapping between Genesys Cloud and Salesforce Omni-Channel.
 ---
 
-This Genesys Cloud Developer Blueprint demonstrates how to configure CX Cloud from Genesys and Salesforce Service Cloud Voice to use enhanced status syncing. Out of the box, the package provides high level status management. This blueprint will show a way to provide more detailed status mapping between Genesys Cloud and Salesforce Omni-Channel.
+This Genesys Cloud Developer Blueprint demonstrates how to configure CX Cloud, Voice for Salesforce Service Cloud to use enhanced status sync. Out of the box, the package provides high level status management. This blueprint will show a way to provide more detailed status mapping between Genesys Cloud and Salesforce Omni-Channel.
 
 This blueprint provides an example Salesforce Apex class that demonstrates how to handle the status change events and how to respond. The events are triggered by both Salesforce status changes and Genesys Cloud status changes. This blueprint can become fully functional when you replace the ids in the class with the ids from your Genesys Cloud and Salesforce orgs.
 
-![Workflow for enhanced status syncing with the CX Cloud from Genesys and Salesforce Service Cloud Voice package](/blueprint/images/enhanced_status_syncing.png "Workflow for enhanced status syncing with the CX Cloud from Genesys and Salesforce Service Cloud Voice package")
+![Workflow for enhanced status sync with the CX Cloud, Voice for Salesforce Service Cloud package](/blueprint/images/enhanced_status_sync.png "Workflow for enhanced status sync with the CX Cloud, Voice for Salesforce Service Cloud package")
 
 ## Scenario
 
-Customers who utilize Workforce Engagement Management will require a deeper status integration than what is available out of the box in our CX Cloud from Genesys and Salesforce Service Cloud Voice package today. 
+Customers who utilize Workforce Engagement Management will require a deeper status integration than what is available out of the box in our CX Cloud, Voice for Salesforce Service Cloud package today. 
 
 ## Solution
 
-This blueprint explains how to extend the GenesysSCVExtension.Status class of the CX Cloud from Genesys and Salesforce Service Cloud Voice package. It shows you how to set up your Apex class to receive status change events from both Genesys Cloud and Salesforce. It shows you the format of the incoming and outgoing data and demonstrates how you can customize your status mapping.
+This blueprint explains how to extend the GenesysSCVExtension.Status class of the CX Cloud, Voice for Salesforce Service Cloud package. It shows you how to set up your Apex class to receive status change events from both Genesys Cloud and Salesforce. It shows you the format of the incoming and outgoing data and demonstrates how you can customize your status mapping.
 
 ### Input
 
@@ -73,8 +73,8 @@ This blueprint explains how to extend the GenesysSCVExtension.Status class of th
 
 * **Genesys Cloud** - A suite of Genesys cloud services for enterprise-grade communications, collaboration, and contact center management. You create and manage statuses in Genesys Cloud.
 * **Salesforce** - The Salesforce cloud customer relationship management (CRM) platform. 
-* **CX Cloud from Genesys and Salesforce Service Cloud Voice** - The Genesys Cloud integration that embeds Genesys Cloud inside Salesforce Service Cloud Voice.
-* **CX Cloud from Genesys and Salesforce Service Cloud Voice managed package** - The managed package that contains all the installation components necessary to run CX Cloud from Genesys and Salesforce Service Cloud Voice.
+* **CX Cloud, Voice for Salesforce Service Cloud** - The Genesys Cloud integration that embeds Genesys Cloud inside Salesforce Service Cloud Voice.
+* **CX Cloud, Voice for Salesforce Service Cloud managed package** - The managed package that contains all the installation components necessary to run CX Cloud, Voice for Salesforce Service Cloud.
 * **Genesys Cloud API** - A set of RESTful APIs that enables you to extend and customize your Genesys Cloud environment. This solution uses the API to get status ids.
 
 ## Prerequisites
@@ -94,14 +94,14 @@ This blueprint explains how to extend the GenesysSCVExtension.Status class of th
   *  **Integration** > **salesforceServiceCloudVoice** > **View**
 
 TODO: Need permanent link address
-For more information, see [Requirements for CX Cloud from Genesys and Salesforce Service Cloud Voice](https://help.mypurecloud.com/?p=166994 "Opens the Requirements for CX Cloud from Genesys and Salesforce Service Cloud Voice article") in the Genesys Cloud Resource Center.
+For more information, see [Requirements for CX Cloud, Voice for Salesforce Service Cloud](https://help.mypurecloud.com/?p=166994 "Opens the Requirements for CX Cloud, Voice for Salesforce Service Cloud article") in the Genesys Cloud Resource Center.
 
 ### Salesforce account
 
 TODO: Need permanent link address
-* A Salesforce organization with the CX Cloud from Genesys and Salesforce Service Cloud Voice integration installed and configured. For more information, see [Install the Salesforce Service Cloud Voice package](https://help.mypurecloud.com/?p=39356/ "Opens the Install the Salesforce Service Cloud Voice package article") in the Genesys Cloud Resource Center.
+* A Salesforce organization with the CX Cloud, Voice for Salesforce Service Cloud integration installed and configured. For more information, see [Install the Salesforce Service Cloud Voice package](https://help.mypurecloud.com/?p=39356/ "Opens the Install the Salesforce Service Cloud Voice package article") in the Genesys Cloud Resource Center.
 
-* The Salesforce organization and the CX Cloud from Genesys and Salesforce Service Cloud Voice integration configured for enhanced status syncing. For more information, see TODO: Need permanent link address in the Genesys Cloud Resource Center.
+* The Salesforce organization and the CX Cloud, Voice for Salesforce Service Cloud integration configured for enhanced status sync. For more information, see TODO: Need permanent link address in the Genesys Cloud Resource Center.
 
 * The solutions engineer assigned a System Administrator profile. For more information, see [Standard Profiles](https://help.salesforce.com/articleView?id=standard_profiles.htm&type=5 "Opens Standard Profiles") in the Salesforce documentation.
 
@@ -130,11 +130,11 @@ TODO: Need permanent link address
 2. In the **StatusSyncManager** class, update the `CHANGE ME` text anywhere a new **SalesforceTargetStatus** class is being created with a valid id from the results in the previous step.
 3. Save the file to Salesforce.
 
-### Configure the CX Cloud from Genesys and Salesforce Service Cloud Voice package
+### Configure the CX Cloud, Voice for Salesforce Service Cloud package
 
 1. Go to the **Genesys Cloud for SCV Settings** component in Salesforce.
 2. Select the desired contact center.
-3. Under Enhanced Status Syncing, select the Extension Class of **StatusSyncManager**.
+3. Under Enhanced Status Sync, select the Extension Class of **StatusSyncManager**.
 4. Save the settings.
 5. Refresh the page for the new settings to take effect.
 
@@ -151,7 +151,7 @@ TODO: Need permanent link address
 ## Additional resources
 
 TODO: Need permanent link address
-* [About CX Cloud from Genesys and Salesforce Service Cloud Voice](https://help.mypurecloud.com/?p=65221 "Opens the About CX Cloud from Genesys and Salesforce Service Cloud Voice article") in the Genesys Cloud Resource Center
+* [About CX Cloud, Voice for Salesforce Service Cloud](https://help.mypurecloud.com/?p=65221 "Opens the About CX Cloud, Voice for Salesforce Service Cloud article") in the Genesys Cloud Resource Center
 * [Getting Started with Apex](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_intro_get_started.htm "Opens the Getting Started with Apex page") in the Salesforce documentation
 * [Create Presence Statuses](https://help.salesforce.com/s/articleView?id=sf.service_presence_create_presence_status.htm&type=5 "Opens the Create Presence Statuses page") in the Salesforce documentation
 * The [enhanced-status-syncing-with-salesforce-service-cloud-voice](https://github.com/GenesysCloudBlueprints/enhanced-status-syncing-with-salesforce-service-cloud-voice "Opens the enhanced-status-syncing-with-salesforce-service-cloud-voice repository in GitHub") repository in GitHub

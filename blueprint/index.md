@@ -3,7 +3,7 @@ title: Update the presence of a Genesys Cloud user based on Salesforce presence 
 author: kristen.oliphant
 indextype: blueprint
 icon: blueprint
-image: images/status-sync-salesforce.PNG
+image: images/status-sync-salesforce.png
 category: 3
 summary: |
   This Genesys Cloud Developer Blueprint demonstrates how to use the enhanced status sync option in CX Cloud from Genesys and Salesforce integration.
@@ -13,7 +13,7 @@ This Genesys Cloud Developer Blueprint demonstrates how to use the enhanced stat
 
 This blueprint provides an example of the Salesforce Apex class that demonstrates how to handle the status change events and how to respond to them. Both Salesforce status changes and Genesys Cloud status changes trigger events. To use the solution given in this blueprint, replace the Ids in the [class](/blueprint/src/classes/StatusSyncManager.cls "Opens the StatusSyncManager.cls") with the Ids from your Genesys Cloud and Salesforce organizations.
 
-![Workflow for enhanced status sync with the CX Cloud from Genesys and Salesforce package](images/status-sync-salesforce.PNG "Workflow for enhanced status sync with the CX Cloud from Genesys and Salesforce package")
+![Workflow for enhanced status sync with the CX Cloud from Genesys and Salesforce package](images/status-sync-salesforce.png "Workflow for enhanced status sync with the CX Cloud from Genesys and Salesforce package")
 
 ## Scenario
 

@@ -11,7 +11,7 @@ summary: |
 
 This Genesys Cloud Developer Blueprint demonstrates how to use the enhanced status sync option in CX Cloud from Genesys and Salesforce integration. This blueprint shows the comprehensive status mapping between Genesys Cloud and Salesforce Omni-Channel.
 
-This blueprint provides an example of the Salesforce Apex class that demonstrates how to handle the status change events and how to respond to them. Both Salesforce status changes and Genesys Cloud status changes trigger events. To use the solution given in this blueprint, replace the Ids in the [class](/blueprint/src/classes/StatusSyncManager.cls "Opens the StatusSyncManager.cls") with the Ids from your Genesys Cloud and Salesforce organizations.
+This blueprint provides an example of the Salesforce Apex class that demonstrates how to handle the status change events and how to respond to them. Both Salesforce status changes and Genesys Cloud status changes trigger events. To use the solution given in this blueprint, replace the Ids in the [class](https://github.com/GenesysCloudBlueprints/enhanced-status-syncing-with-salesforce-service-cloud-voice/blob/main/blueprint/src/classes/StatusSyncManager.cls "Opens the StatusSyncManager.cls") with the Ids from your Genesys Cloud and Salesforce organizations.
 
 ![Workflow for enhanced status sync with the CX Cloud from Genesys and Salesforce package](images/status-sync-salesforce.png "Workflow for enhanced status sync with the CX Cloud from Genesys and Salesforce package")
 

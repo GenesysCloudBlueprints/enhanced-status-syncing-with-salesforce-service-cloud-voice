@@ -29,6 +29,7 @@ global with sharing class TestExtension implements genesyscloud.GenesysSCVExtens
 
     // These are the variables that will be changed to update the agent's status.
     // These are default values to be sent back if no changes are made to the target statuses.
+    // NOTE: If these values are NOT handled below, NO CHANGES will be made to the target statuses.
     String salesforceResponseTargetStatusId = salesforceTargetStatusId;
     String genesysResponseTargetStatusId = genesysTargetId;
 
@@ -51,7 +52,7 @@ global with sharing class TestExtension implements genesyscloud.GenesysSCVExtens
         genesysResponseTargetStatusId = 'CHANGE ME';
       }
       when else {
-        System.debug('Salesforce status not handled: ' + salesforceTargetStatusName);
+        System.debug(logginglevel.WARN, 'Salesforce status NOT HANDLED: ' + salesforceTargetStatusName);
       }
     }
 
@@ -84,6 +85,7 @@ global with sharing class TestExtension implements genesyscloud.GenesysSCVExtens
 
     // These are the variables that will be changed to update the agent's status.
     // These are default values to be sent back if no changes are made to the target statuses.
+    // NOTE: If these values are NOT handled below, NO CHANGES will be made to the target statuses.
     String salesforceResponseTargetStatusId = salesforceTargetStatusId;
     String genesysResponseTargetStatusId = genesysTargetId;
 
@@ -106,7 +108,7 @@ global with sharing class TestExtension implements genesyscloud.GenesysSCVExtens
         salesforceResponseTargetStatusId = '0';
       }
       when else {
-        System.debug('Genesys Cloud status not handled: ' + genesysTargetSystemPresence);
+        System.debug(logginglevel.WARN, 'Genesys Cloud status NOT HANDLED: ' + genesysTargetSystemPresence);
       }
     }
 

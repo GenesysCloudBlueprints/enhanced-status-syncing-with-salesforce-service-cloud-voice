@@ -1,132 +1,180 @@
-global with sharing class StatusSyncManager implements genesyscloud.GenesysSCVExtension.Status {
-  // ATTENTION: You will need to find the Salesforce status ids and the Genesys Cloud status ids that exist in your orgs.
+// ATTENTION: You will need to find the Genesys presence ids that exist in your org.
 
-  public class GenesysCloudStatus {
-    public GenesysTargetStatus targetStatus;
-    public GenesysCloudStatus(GenesysTargetStatus targetStatus) {
-      this.targetStatus = targetStatus;
+// ATTENTION: You will need to find the Salesforce status ids that exist in your org.
+// Run this query in your Salesforce org to get the status ids specific to your org. You can use 15 or 18 digit ids.
+// SELECT DeveloperName,Id,IsDeleted,MasterLabel FROM ServicePresenceStatus
+
+global with sharing class TestExtension implements genesyscloud.GenesysSCVExtension.Status {
+  public String onSalesforceStatusChange(String data) {
+    IncomingStatusChange statusUpdate = (IncomingStatusChange) JSON.deserialize(data, IncomingStatusChange.class);
+    // -----------------------------------------------------------------------------------------------------------------------------------
+    // Examples of how to get current Salesforce Status Variables:
+    // String salesforceCurrentStatusApiName = statusUpdate.salesforceStatus.currentStatus.statusApiName;
+    // String salesforceCurrentStatusId = statusUpdate.salesforceStatus.currentStatus.statusId;
+    // String salesforceCurrentStatusName = statusUpdate.salesforceStatus.currentStatus.statusName;
+
+    // Examples of how to get target Salesforce Status Variables:
+    // String salesforceTargetStatusApiName = statusUpdate.salesforceStatus.targetStatus.statusApiName;
+    String salesforceTargetStatusId = statusUpdate.salesforceStatus.targetStatus.statusId;
+    String salesforceTargetStatusName = statusUpdate.salesforceStatus.targetStatus.statusName;
+    // -----------------------------------------------------------------------------------------------------------------------------------
+    // Examples of how to get current Genesys Status Variables:
+    // String genesysCurrentId = statusUpdate.genesysCloudStatus.currentStatus.id;
+    // String genesysCurrentSystemPresence = statusUpdate.genesysCloudStatus.currentStatus.systemPresence;
+
+    // Examples of how to get target Genesys Status Variables:
+    String genesysTargetId = statusUpdate.genesysCloudStatus.targetStatus.id;
+    // String genesysTargetSystemPresence = statusUpdate.genesysCloudStatus.targetStatus.systemPresence;
+    // -----------------------------------------------------------------------------------------------------------------------------------
+
+    // These are the variables that will be changed to update the agent's status.
+    // These are default values to be sent back if no changes are made to the target statuses.
+    // NOTE: If these values are NOT handled below, NO CHANGES will be made to the target statuses.
+    String salesforceResponseTargetStatusId = salesforceTargetStatusId;
+    String genesysResponseTargetStatusId = genesysTargetId;
+
+    if (String.isNotEmpty(salesforceTargetStatusName)) {
+      salesforceTargetStatusName = salesforceTargetStatusName.toUpperCase();
+    }
+
+    switch on salesforceTargetStatusName {
+      when 'AVAILABLE FOR VOICE' {
+        genesysResponseTargetStatusId = 'CHANGE ME';
+      }
+      when 'ONLINE' {
+        genesysResponseTargetStatusId = 'CHANGE ME';
+      }
+      when 'NOT AVAILABLE' {
+        genesysResponseTargetStatusId = 'CHANGE ME';
+      }
+      when null {
+        // Agent clicked Offline in Omni-Channel
+        genesysResponseTargetStatusId = 'CHANGE ME';
+      }
+      when else {
+        System.debug(logginglevel.WARN, 'Salesforce status NOT HANDLED: ' + salesforceTargetStatusName);
+      }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Form response object... shouldn't need to be touched.
+    return JSON.serialize(new Response(genesysResponseTargetStatusId, salesforceResponseTargetStatusId));
+  }
+
+  public String onGenesysCloudStatusChange(String data) {
+    IncomingStatusChange statusUpdate = (IncomingStatusChange) JSON.deserialize(data, IncomingStatusChange.class);
+    // -----------------------------------------------------------------------------------------------------------------------------------
+    // Examples of how to get current Salesforce Status Variables:
+    // String salesforceCurrentStatusApiName = statusUpdate.salesforceStatus.currentStatus.statusApiName;
+    // String salesforceCurrentStatusId = statusUpdate.salesforceStatus.currentStatus.statusId;
+    // String salesforceCurrentStatusName = statusUpdate.salesforceStatus.currentStatus.statusName;
+
+    // Examples of how to get target Salesforce Status Variables:
+    // String salesforceTargetStatusApiName = statusUpdate.salesforceStatus.targetStatus.statusApiName;
+    String salesforceTargetStatusId = statusUpdate.salesforceStatus.targetStatus.statusId;
+    // String salesforceTargetStatusName = statusUpdate.salesforceStatus.targetStatus.statusName;
+    // -----------------------------------------------------------------------------------------------------------------------------------
+    // Examples of how to get current Genesys Status Variables:
+    // String genesysCurrentId = statusUpdate.genesysCloudStatus.currentStatus.id;
+    // String genesysCurrentSystemPresence = statusUpdate.genesysCloudStatus.currentStatus.systemPresence;
+
+    // Examples of how to get target Genesys Status Variables:
+    String genesysTargetId = statusUpdate.genesysCloudStatus.targetStatus.id;
+    String genesysTargetSystemPresence = statusUpdate.genesysCloudStatus.targetStatus.systemPresence;
+    // -----------------------------------------------------------------------------------------------------------------------------------
+
+    // These are the variables that will be changed to update the agent's status.
+    // These are default values to be sent back if no changes are made to the target statuses.
+    // NOTE: If these values are NOT handled below, NO CHANGES will be made to the target statuses.
+    String salesforceResponseTargetStatusId = salesforceTargetStatusId;
+    String genesysResponseTargetStatusId = genesysTargetId;
+
+    if (String.isNotEmpty(genesysTargetSystemPresence)) {
+      genesysTargetSystemPresence = genesysTargetSystemPresence.toUpperCase();
+    }
+
+    switch on genesysTargetSystemPresence {
+      when 'AVAILABLE' {
+        salesforceResponseTargetStatusId = 'CHANGE ME';
+      }
+      when 'ON_QUEUE' {
+        salesforceResponseTargetStatusId = 'CHANGE ME';
+      }
+      when 'AWAY' {
+        salesforceResponseTargetStatusId = 'CHANGE ME';
+      }
+      when 'BUSY' {
+        // Sets agent to Offline in Omni-Channel
+        salesforceResponseTargetStatusId = '0';
+      }
+      when else {
+        System.debug(logginglevel.WARN, 'Genesys Cloud status NOT HANDLED: ' + genesysTargetSystemPresence);
+      }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Form response object... shouldn't need to be touched.
+    return JSON.serialize(new Response(genesysResponseTargetStatusId, salesforceResponseTargetStatusId));
+  }
+
+  // No need to change below --------------------------------------------------------------------------------------------------------
+  //#region Response Obj
+  public class Response {
+    public ResponseGenesysCloudStatusObj genesysCloudStatus;
+    public ResponseSalesforceStatusObj salesforceStatus;
+    public Response(String genesysResponseTargetStatusId, String salesforceResponseTargetStatusId) {
+      this.genesysCloudStatus = new ResponseGenesysCloudStatusObj(genesysResponseTargetStatusId);
+      this.salesforceStatus = new ResponseSalesforceStatusObj(salesforceResponseTargetStatusId);
     }
   }
-  public class GenesysTargetStatus {
+  public class ResponseGenesysCloudStatus {
     public String id;
-    public GenesysTargetStatus(String id) {
+    public ResponseGenesysCloudStatus(String id) {
       this.id = id;
     }
   }
-  public class SalesforceStatus {
-    public SalesforceTargetStatus targetStatus;
-    public SalesforceStatus(SalesforceTargetStatus targetStatus) {
-      this.targetStatus = targetStatus;
+  public class ResponseGenesysCloudStatusObj {
+    public ResponseGenesysCloudStatus targetStatus;
+    public ResponseGenesysCloudStatusObj(String genesysResponseTargetStatusId) {
+      this.targetStatus = new ResponseGenesysCloudStatus(genesysResponseTargetStatusId);
     }
   }
-  public class SalesforceTargetStatus {
+  public class ResponseSalesforceStatus {
     public String statusId;
-    public SalesforceTargetStatus(String statusId) {
+    public ResponseSalesforceStatus(String statusId) {
       this.statusId = statusId;
     }
   }
-  public class Response {
-    public GenesysCloudStatus genesysCloudStatus;
-    public SalesforceStatus salesforceStatus;
-    public Response(GenesysCloudStatus genesysCloudStatus, SalesforceStatus salesforceStatus) {
-      this.genesysCloudStatus = genesysCloudStatus;
-      this.salesforceStatus = salesforceStatus;
+  public class ResponseSalesforceStatusObj {
+    public ResponseSalesforceStatus targetStatus;
+    public ResponseSalesforceStatusObj(String salesforceResponseTargetStatusId) {
+      this.targetStatus = new ResponseSalesforceStatus(salesforceResponseTargetStatusId);
     }
   }
+  //#endregion Response Obj
 
-  // ATTENTION: Run this API call in your Genesys Cloud org to get the status ids specific to your org.
-  // API Enpoint: https://api.{region}.com/api/v2/systempresences
-  public String onSalesforceStatusChange(String data) {
-    Map<String, Object> statusData = (Map<String, Object>) JSON.deserializeUntyped(data);
-    Map<String, Object> salesforceStatusMap = (Map<String, Object>) statusData.get('salesforceStatus');
-    Map<String, Object> salesforceInputStatus = (Map<String, Object>) salesforceStatusMap.get('targetStatus');
-    Map<String, Object> genesysStatusMap = (Map<String, Object>) statusData.get('genesysCloudStatus');
-    Map<String, Object> genesysInputStatus = (Map<String, Object>) genesysStatusMap.get('targetStatus');
-    String statusName = '';
-    String statusId = '';
-    String id = '';
-    String presence = '';
-    if (salesforceInputStatus != null) {
-      statusName = (String) salesforceInputStatus.get('statusName');
-      statusId = (String) salesforceInputStatus.get('statusId');
-    }
-    if (genesysInputStatus != null) {
-      id = (String) genesysInputStatus.get('id');
-      presence = (String) genesysInputStatus.get('systemPresence');
-    }
-    GenesysTargetStatus genesysTargetStatus = new GenesysTargetStatus(id);
-    SalesforceTargetStatus salesforceTargetStatus = new SalesforceTargetStatus(statusId);
-    GenesysCloudStatus genesysCloudStatus = new GenesysCloudStatus(genesysTargetStatus);
-    SalesforceStatus salesforceStatus = new SalesforceStatus(salesforceTargetStatus);
-
-    if (String.isNotEmpty(statusName)) {
-      statusName = statusName.toUpperCase();
-    }
-    switch on statusName {
-      when 'AVAILABLE FOR VOICE' {
-        genesysTargetStatus = new GenesysTargetStatus('CHANGE ME');
-      }
-      when 'ONLINE' {
-        genesysTargetStatus = new GenesysTargetStatus('CHANGE ME');
-      }
-      when 'NOT AVAILABLE' {
-        genesysTargetStatus = new GenesysTargetStatus('CHANGE ME');
-      }
-      when else {
-        System.debug('Salesforce status not found or is null: ' + statusName);
-      }
-    }
-    genesysCloudStatus = new GenesysCloudStatus(genesysTargetStatus);
-    salesforceStatus = new SalesforceStatus(salesforceTargetStatus);
-    Response response = new Response(genesysCloudStatus, salesforceStatus);
-    return JSON.serialize(response);
+  //#region IncomingStatusChange Obj
+  public class IncomingStatusChange {
+    public IncomingSalesforceStatus salesforceStatus;
+    public IncomingGenesysCloudStatus genesysCloudStatus;
   }
-
-  // ATTENTION: Run this query in your Salesforce org to get the status ids specific to your org. You can use 15 or 18 digit ids.
-  // SELECT DeveloperName, Id, MasterLabel FROM ServicePresenceStatus WHERE IsDeleted = false
-  public String onGenesysCloudStatusChange(String data) {
-    Map<String, Object> statusData = (Map<String, Object>) JSON.deserializeUntyped(data);
-    Map<String, Object> salesforceStatusMap = (Map<String, Object>) statusData.get('salesforceStatus');
-    Map<String, Object> salesforceInputStatus = (Map<String, Object>) salesforceStatusMap.get('targetStatus');
-    Map<String, Object> genesysStatusMap = (Map<String, Object>) statusData.get('genesysCloudStatus');
-    Map<String, Object> genesysInputStatus = (Map<String, Object>) genesysStatusMap.get('targetStatus');
-    String statusName = '';
-    String statusId = '';
-    String id = '';
-    String presence = '';
-    if (salesforceInputStatus != null) {
-      statusName = (String) salesforceInputStatus.get('statusName');
-      statusId = (String) salesforceInputStatus.get('statusId');
-    }
-    if (genesysInputStatus != null) {
-      id = (String) genesysInputStatus.get('id');
-      presence = (String) genesysInputStatus.get('systemPresence');
-    }
-    GenesysTargetStatus genesysTargetStatus = new GenesysTargetStatus(id);
-    SalesforceTargetStatus salesforceTargetStatus = new SalesforceTargetStatus(statusId);
-    GenesysCloudStatus genesysCloudStatus = new GenesysCloudStatus(genesysTargetStatus);
-    SalesforceStatus salesforceStatus = new SalesforceStatus(salesforceTargetStatus);
-
-    if (String.isNotBlank(presence)) {
-      presence = presence.toUpperCase();
-    }
-    switch on presence {
-      when 'AVAILABLE' {
-        salesforceTargetStatus = new SalesforceTargetStatus('CHANGE ME');
-      }
-      when 'ON_QUEUE' {
-        salesforceTargetStatus = new SalesforceTargetStatus('CHANGE ME');
-      }
-      when 'AWAY' {
-        salesforceTargetStatus = new SalesforceTargetStatus('CHANGE ME');
-      }
-      when else {
-        System.debug('Genesys Cloud status not found or is null: ' + statusName);
-      }
-    }
-    genesysCloudStatus = new GenesysCloudStatus(genesysTargetStatus);
-    salesforceStatus = new SalesforceStatus(salesforceTargetStatus);
-    Response response = new Response(genesysCloudStatus, salesforceStatus);
-    return JSON.serialize(response);
+  public class IncomingSalesforceStatusObj {
+    public String statusApiName;
+    public String statusId;
+    public String statusName;
   }
+  public class IncomingSalesforceStatus {
+    public IncomingSalesforceStatusObj targetStatus;
+    public IncomingSalesforceStatusObj currentStatus;
+  }
+  public class IncomingGenesysCloudStatusObj {
+    public String id;
+    public String systemPresence;
+  }
+  public class IncomingGenesysCloudStatus {
+    public IncomingGenesysCloudStatusObj targetStatus;
+    public IncomingGenesysCloudStatusObj currentStatus;
+  }
+  //#endregion IncomingStatusChange Obj
+  // -----------------------------------------------------------------------------------------------------------------
 }
